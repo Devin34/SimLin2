@@ -3,9 +3,9 @@
 
 void SandboxWindow::Draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(width, height), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(width, height));
 
-    if (!ImGui::Begin("Sandbox", &show_sandbox_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize))
+    if (!ImGui::Begin("Sandbox", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize))
     {
         ImGui::End();
         return;

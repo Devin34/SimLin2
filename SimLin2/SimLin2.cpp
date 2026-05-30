@@ -8,6 +8,9 @@
 #include <memory>
 #include <string>
 #include "ui/SandboxWindow.h"
+#include "ui/SetupWindow.h"
+
+
 
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
@@ -26,6 +29,7 @@ struct App {
     bool show_sandbox_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     SandboxWindow sandbox_window;
+    SetupWindow setup_window;
 };
 
 
@@ -114,10 +118,13 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
     ImGui::NewFrame();
 
     //gui windows go here!
-    //if (app->show_demo_window)
-       // ImGui::ShowDemoWindow(&app->show_demo_window);
+    if (app->show_demo_window)
+       ImGui::ShowDemoWindow(&app->show_demo_window);
 
     app->sandbox_window.Draw();
+    app->setup_window.Draw();
+
+
        
 
 
