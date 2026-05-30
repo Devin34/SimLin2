@@ -35,7 +35,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     // Create SDL window graphics context
     float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
     SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN | SDL_WINDOW_HIGH_PIXEL_DENSITY;
-    app->window = SDL_CreateWindow("Dear ImGui SDL3+SDL_GPU example", (int)(1280 * main_scale), (int)(800 * main_scale), window_flags);
+    app->window = SDL_CreateWindow("SimLin2.0 | Devin Hall", (int)(1280 * main_scale), (int)(800 * main_scale), window_flags);
     if (app->window == nullptr)
     {
         printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
