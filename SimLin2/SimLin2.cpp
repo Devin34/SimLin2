@@ -6,6 +6,11 @@
 #include <stdio.h>          
 #include <SDL3/SDL.h>
 #include <memory>
+#include <string>
+#include "ui/SandboxWindow.h"
+#include "ui/SetupWindow.h"
+
+
 
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
@@ -16,12 +21,18 @@
 #endif
 
 
+
 struct App {
     SDL_Window* window = nullptr;
     SDL_GPUDevice* gpu_device = nullptr;
     bool show_demo_window = true;
+    bool show_sandbox_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    SandboxWindow sandbox_window;
+    SetupWindow setup_window;
 };
+
+
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     auto app = std::make_unique<App>();
@@ -34,8 +45,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
 
     // Create SDL window graphics context
     float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
-    SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN | SDL_WINDOW_HIGH_PIXEL_DENSITY;
-    app->window = SDL_CreateWindow("Dear ImGui SDL3+SDL_GPU example", (int)(1280 * main_scale), (int)(800 * main_scale), window_flags);
+    SDL_WindowFlags window_flags = SDL_WINDOW_HIDDEN | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+    app->window = SDL_CreateWindow("SimLin2.0 | Devin Hall", (int)(1280 * main_scale), (int)(800 * main_scale), window_flags);
     if (app->window == nullptr)
     {
         printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
@@ -106,9 +117,15 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
 
-    // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+    //gui windows go here!
     if (app->show_demo_window)
-        ImGui::ShowDemoWindow(&app->show_demo_window);
+       ImGui::ShowDemoWindow(&app->show_demo_window);
+
+    app->sandbox_window.Draw();
+    app->setup_window.Draw();
+
+
+       
 
 
 
@@ -176,3 +193,5 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result) {
     SDL_DestroyWindow(app->window);
     SDL_Quit();
 }
+
+

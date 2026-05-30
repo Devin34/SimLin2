@@ -3,7 +3,7 @@
 #
 
 # Add source to this project's executable.
-add_executable (SimLin2 "SimLin2.cpp" "SimLin2.h")
+add_executable (SimLin2 "SimLin2.cpp" "SimLin2.h" "ui/SandboxWindow.h" "ui/SandboxWindow.cpp" "ui/SetupWindow.h" "ui/SetupWindow.cpp" "ui/AddNewNodeWindow.h" "ui/AddNewNodeWindow.cpp")
 
 find_package(SDL3 CONFIG REQUIRED)
 target_link_libraries(SimLin2 PRIVATE SDL3::SDL3)
