@@ -1,9 +1,19 @@
 #pragma once
 #include "AddNewNodeWindow.h"
+#include <string>
+#include <vector>
 
+// Define what a node contains
+struct NodeData {
+    std::string name;
+    float x;
+    float y;
+};
 
 class SetupWindow
 {
+
+
 public:
     void Draw();
     bool show_setup_window = true;
@@ -11,8 +21,10 @@ public:
     AddNewNodeWindow add_new_node_window;
 
 private:
+    int number_of_nodes = 0;
     float width = 1000;
     float height = 600;
-    float mGridSpacing = 25.0f;
-    float mZoom = 1.0f;
+    // This vector holds your dynamic list of nodes
+    std::vector<NodeData> nodes;
+    int nodeCounter = 1; // Used to automatically name nodes (e.g., "Node 1")
 };
