@@ -26,5 +26,4 @@ private:
     float height = 600;
     // This vector holds your dynamic list of nodes
     std::vector<NodeData> nodes;
-    int nodeCounter = 1; // Used to automatically name nodes (e.g., "Node 1")
-};
+    };

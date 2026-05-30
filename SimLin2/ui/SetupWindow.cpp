@@ -13,11 +13,12 @@ void SetupWindow::Draw() {
     if (ImGui::BeginTabBar("MyTabBar")) {
         if (ImGui::BeginTabItem("Node List")) {
             ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-            if (ImGui::BeginTable("button_header_table", 3, flags)) {
+            if (ImGui::BeginTable("button_header_table", 4, flags)) {
 
                 ImGui::TableSetupColumn("Node", ImGuiTableColumnFlags_WidthStretch);
                 ImGui::TableSetupColumn("X", ImGuiTableColumnFlags_WidthStretch);
                 ImGui::TableSetupColumn("Y", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 50.0f);
 
                 ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
 
@@ -70,7 +71,6 @@ void SetupWindow::Draw() {
                     }
                     if (ImGui::Button("Add Node")) {
                         NodeData newNode;
-                        newNode.name = "Node " + std::to_string(nodeCounter++);
                         newNode.x = val1;
                         newNode.y = val2;
                         nodes.push_back(newNode);
@@ -95,23 +95,63 @@ void SetupWindow::Draw() {
                 ImGui::TableNextColumn();
                 ImGui::TableHeader("Y");
 
+                ImGui::TableNextColumn();
+                ImGui::TableHeader(""); // Empty header for delete buttons
+
+                // Track if any node needs deletion this frame
+                int nodeToDeleteIndex = -1;
+
                 // --- DYNAMIC RENDERING FROM VECTOR ---
                 for (size_t i = 0; i < nodes.size(); i++) {
                     ImGui::TableNextRow();
 
+                    // Column 1: Node Name
                     ImGui::TableNextColumn();
-                    ImGui::Text("%s", nodes[i].name.c_str());
+                    // Inside the render loop:
+                    ImGui::Text("Node %zu", i + 1); // Dynamically outputs "Node 1", "Node 2", etc.
 
+
+                    // Column 2: X Position
                     ImGui::TableNextColumn();
                     ImGui::Text("%.3f", nodes[i].x);
 
+                    // Column 3: Y Position
                     ImGui::TableNextColumn();
                     ImGui::Text("%.3f", nodes[i].y);
+
+                    // Column 4: Delete Action Button
+                    ImGui::TableNextColumn();
+
+                    // Use PushStyleColor to style the delete button a soft red color
+                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.7f, 0.25f, 0.25f, 1.0f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.85f, 0.35f, 0.35f, 1.0f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.6f, 0.2f, 0.2f, 1.0f));
+
+                    // Use the index ##i to give every row's button a strictly unique internal ImGui ID
+                    char buttonId[32];
+                    sprintf_s(buttonId, "X##Del_%zu", i);
+
+                    if (ImGui::Button(buttonId, ImVec2(-FLT_MIN, 0.0f))) {
+                        nodeToDeleteIndex = static_cast<int>(i); // Mark this index for deletion
+                    }
+                    if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) {
+                        ImGui::SetItemTooltip("Click to delete node.");
+                    }
+
+                    ImGui::PopStyleColor(3); // Remove all 3 button color styles cleanly
                 }
+
                 ImGui::EndTable();
+
+                // --- SAFE DELETION POST-RENDER ---
+                // We erase the item OUTSIDE the table loop context to avoid container mutation mid-frame
+                if (nodeToDeleteIndex != -1) {
+                    nodes.erase(nodes.begin() + nodeToDeleteIndex);
+                }
             }
             ImGui::EndTabItem();
         }
+
 
         if (ImGui::BeginTabItem("Element List")) {
             ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
