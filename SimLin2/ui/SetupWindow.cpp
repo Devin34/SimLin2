@@ -3,6 +3,9 @@
 #include "AddNewNodeWindow.h"
 #include <cstdio>
 
+SetupWindow::SetupWindow(NodeManager& nodeManager) : mNodeManager(nodeManager) {
+}
+
 void SetupWindow::Draw() {
     ImGui::SetNextWindowSize(ImVec2(width, height), ImGuiCond_FirstUseEver);
     if (!ImGui::Begin("Setup", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
@@ -59,7 +62,7 @@ void SetupWindow::Draw() {
                     }
 
                     bool isCurrentlyDuplicate = false;
-                    for (const auto& node : nodes) {
+                    for (const auto& node : mNodeManager.nodes) {
                         if (node.x == val1 && node.y == val2) {
                             isCurrentlyDuplicate = true;
                             break;
@@ -73,7 +76,7 @@ void SetupWindow::Draw() {
                         NodeData newNode;
                         newNode.x = val1;
                         newNode.y = val2;
-                        nodes.push_back(newNode);
+                        mNodeManager.nodes.push_back(newNode);
                         ImGui::CloseCurrentPopup();
                     }
                     if (isCurrentlyDuplicate) {
@@ -102,7 +105,7 @@ void SetupWindow::Draw() {
                 int nodeToDeleteIndex = -1;
 
                 // --- DYNAMIC RENDERING FROM VECTOR ---
-                for (size_t i = 0; i < nodes.size(); i++) {
+                for (size_t i = 0; i < mNodeManager.nodes.size(); i++) {
                     ImGui::TableNextRow();
 
                     // Column 1: Node Name
@@ -113,11 +116,11 @@ void SetupWindow::Draw() {
 
                     // Column 2: X Position
                     ImGui::TableNextColumn();
-                    ImGui::Text("%.3f", nodes[i].x);
+                    ImGui::Text("%.3f", mNodeManager.nodes[i].x);
 
                     // Column 3: Y Position
                     ImGui::TableNextColumn();
-                    ImGui::Text("%.3f", nodes[i].y);
+                    ImGui::Text("%.3f", mNodeManager.nodes[i].y);
 
                     // Column 4: Delete Action Button
                     ImGui::TableNextColumn();
@@ -146,7 +149,7 @@ void SetupWindow::Draw() {
                 // --- SAFE DELETION POST-RENDER ---
                 // We erase the item OUTSIDE the table loop context to avoid container mutation mid-frame
                 if (nodeToDeleteIndex != -1) {
-                    nodes.erase(nodes.begin() + nodeToDeleteIndex);
+                    mNodeManager.nodes.erase(mNodeManager.nodes.begin() + nodeToDeleteIndex);
                 }
             }
             ImGui::EndTabItem();

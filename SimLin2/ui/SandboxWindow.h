@@ -1,14 +1,30 @@
 #pragma once
 
+#include "imgui.h"
+#include <algorithm>
+#include "../NodeManager.h"
+
+struct Camera
+{
+    ImVec2 offset = ImVec2(0, 0);
+    float zoom = 55.0f;
+
+    ImVec2 defaultOffset = ImVec2(0.0f, 0.0f);
+    float defaultZoom = 1.0f;
+};
+
 class SandboxWindow
 {
 public:
+    SandboxWindow(NodeManager& nodeManager);
     void Draw();
-    bool show_sandbox_window = true;
+    void DrawPreSim();
 
 private:
-    float width = 600;
-    float height = 600;
-    float mGridSpacing = 25.0f;
-    float mZoom = 1.0f;
+
+    Camera mCamera;
+    NodeManager& mNodeManager;
+
+    float width = 700;
+    float height = 700;
 };
