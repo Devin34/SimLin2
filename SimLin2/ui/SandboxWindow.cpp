@@ -40,13 +40,7 @@ void SandboxWindow::DrawPreSim() {
 
     UpdateViewport(pre_sim_vp, canvasPos, canvasSize);
 
-    RenderContext ctx{
-        pre_sim_viewport,
-        ImGui::GetWindowDrawList(),
-        canvasPos,
-        canvasSize,
-        io
-    };
+
 
 
     if (canvasSize.x < 50.0f) canvasSize.x = 50.0f;
@@ -54,31 +48,19 @@ void SandboxWindow::DrawPreSim() {
 
     ImDrawList* drawList = ImGui::GetWindowDrawList();
 
+    RenderContext ctx{
+    pre_sim_viewport,
+    drawList,
+    canvasPos,
+    canvasSize,
+    io
+    };
+
     HandleViewportInput(pre_sim_viewport, io);
 
     GridRenderer::Draw(ctx);
     NodeRenderer::Draw(ctx, node_manager);
 
-    const float buttonMargin = 10.0f;
-
-    // measure button size first
-    ImVec2 buttonSize = ImGui::CalcTextSize("Reset Camera");
-    buttonSize.x += ImGui::GetStyle().FramePadding.x * 2.0f;
-    buttonSize.y += ImGui::GetStyle().FramePadding.y * 2.0f;
-
-    // position in bottom-right of canvas
-    ImVec2 buttonPos(
-        canvasPos.x + canvasSize.x - buttonSize.x - buttonMargin,
-        canvasPos.y + canvasSize.y - buttonSize.y - buttonMargin
-    );
-
-    ImGui::SetCursorScreenPos(buttonPos);
-
-    if (ImGui::Button("Reset Camera"))
-    {
-        pre_sim_vp.camera.zoom = 55.0f;
-        pre_sim_vp.camera.offset = ImVec2(0.0f, 0.0f);
-    }
 }
 
 void SandboxWindow::Draw() {

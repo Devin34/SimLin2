@@ -73,6 +73,28 @@ void GridRenderer::Draw(const RenderContext& ctx) {
         2.0f
     );
 
+    const float buttonMargin = 10.0f;
+
+    // measure button size first
+    ImVec2 buttonSize = ImGui::CalcTextSize("Reset Camera");
+    buttonSize.x += ImGui::GetStyle().FramePadding.x * 2.0f;
+    buttonSize.y += ImGui::GetStyle().FramePadding.y * 2.0f;
+
+    // position in bottom-right of canvas
+    ImVec2 buttonPos(
+        ctx.canvasPos.x + ctx.canvasSize.x - buttonSize.x - buttonMargin,
+        ctx.canvasPos.y + ctx.canvasSize.y - buttonSize.y - buttonMargin
+    );
+
+    ImGui::SetCursorScreenPos(buttonPos);
+
+    if (ImGui::Button("Reset Camera"))
+    {
+        cam.zoom = 55.0f;
+        cam.offset = ImVec2(0.0f, 0.0f);
+    }
+
+
     char gridText[64];
 
     if (gridSpacing >= 1000.0f)
