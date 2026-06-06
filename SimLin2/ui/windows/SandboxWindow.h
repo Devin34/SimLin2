@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../NodeManager.h"
-#include "Viewport.h"
+#include "../../NodeManager.h"
+#include "../Viewport.h"
 
 //struct Camera
 //{

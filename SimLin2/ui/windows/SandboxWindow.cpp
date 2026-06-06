@@ -1,13 +1,14 @@
 #include "SandboxWindow.h"
 #include "imgui.h"
-#include "../NodeManager.h"
+#include "../../NodeManager.h"
 #include <algorithm>
 #include <cmath>
 
-#include "CameraController.h"
-#include "RenderContext.h"
-#include "GridRenderer.h"
-#include "NodeRenderer.h"
+#include "../RenderContext.h"
+#include "../GridRenderer.h"
+#include "../NodeRenderer.h"
+#include "../CameraController.h"
+
 
 SandboxWindow::SandboxWindow(NodeManager& node_manager) : node_manager(node_manager), pre_sim_viewport() {
     pre_sim_viewport.camera.offset = ImVec2(0.0f, 0.0f);
@@ -66,8 +67,7 @@ void SandboxWindow::DrawPreSim() {
 void SandboxWindow::Draw() {
     ImGui::SetNextWindowSize(ImVec2(width, height));
 
-    if (!ImGui::Begin("Sandbox", nullptr,
-        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar))
+    if (!ImGui::Begin("Sandbox", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar))
     {
         ImGui::End();
         return;

@@ -4,11 +4,10 @@
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlgpu3.h"
 #include <stdio.h>          
-#include <SDL3/SDL.h>
 #include <memory>
-#include <string>
-#include "ui/SandboxWindow.h"
-#include "ui/SetupWindow.h"
+#include "ui/windows/SandboxWindow.h"
+#include "ui/windows/SetupWindow.h"
+
 
 
 
@@ -32,14 +31,17 @@ struct App {
     SandboxWindow sandbox_window;
     SetupWindow setup_window;
 
-    App() : sandbox_window(node_manager), setup_window(node_manager) {
-    }
+    App() : sandbox_window(node_manager), setup_window(node_manager) {}
 };
 
 
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     auto app = std::make_unique<App>();
+
+    app->setup_window.show_window = true;
+
+
     
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
     {
@@ -126,7 +128,11 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
        ImGui::ShowDemoWindow(&app->show_demo_window);
 
     app->sandbox_window.Draw();
-    app->setup_window.Draw();
+
+    if (app->setup_window.show_window) {
+        app->setup_window.Draw();
+    }
+
 
 
        
