@@ -12,7 +12,6 @@ class SetupWindow : public Window {
 
 
     public:
-        int FindNodeIndex(const NodeData& node);
         void MaterialTable();
         void NodeTable();
         void ElementTable();

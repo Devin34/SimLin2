@@ -6,10 +6,9 @@
 #include "MaterialManager.h"
 
 struct ElementData {
-    std::string name;
-    NodeData node1;
-    NodeData node2;
-    MaterialData material;
+    int node1 = -1;
+    int node2 = -1;
+    int material = -1;
 
 };
 
