@@ -11,9 +11,4 @@ struct MaterialData {
 class MaterialManager {
     public:
         std::vector<MaterialData> materials;
-
-        void CreateMaterial();
-        void DestroyMaterial();
-        void AddMaterial();
-        void RemoveMaterial();
 };

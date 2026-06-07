@@ -2,6 +2,8 @@
 
 #include "../../NodeManager.h"
 #include "MatEditorWindow.h"
+#include "../../managers/MaterialManager.h"
+#include "../../managers/ElementManager.h"
 
 
 
@@ -18,7 +20,7 @@ class SetupWindow : public Window {
         void Draw() override;
 
 
-        SetupWindow(NodeManager& node_manager);
+        SetupWindow(NodeManager& node_manager, MaterialManager& material_manager, ElementManager& element_manager);
 
     private:
         struct ChildWindows {
@@ -27,6 +29,8 @@ class SetupWindow : public Window {
 
 
         NodeManager& mNodeManager;
+        MaterialManager& mMaterialManager;
+        ElementManager& mElementManager;
         ChildWindows child_windows;
 
 

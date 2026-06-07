@@ -20,11 +20,11 @@ add_executable (SimLin2 "SimLin2.cpp"
 						"ui/GridRenderer.cpp" 
 						"ui/NOdeRenderer.h" 
 						"ui/NodeRenderer.cpp"  
-						"managers/MaterialManager.cpp" 
+						 
 						"ui/windows/MatEditorWindow.h" 
 						"ui/windows/MatEditorWindow.cpp" 
 						"ui/windows/Window.h" 
-						"ui/windows/Window.cpp")
+						"ui/windows/Window.cpp" "managers/ElementManager.h")
 
 find_package(SDL3 CONFIG REQUIRED)
 target_link_libraries(SimLin2 PRIVATE SDL3::SDL3)
