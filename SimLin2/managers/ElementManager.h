@@ -7,8 +7,8 @@
 
 struct ElementData {
     std::string name;
-    NodeData start_node;
-    NodeData end_node;
+    NodeData node1;
+    NodeData node2;
     MaterialData material;
 
 };

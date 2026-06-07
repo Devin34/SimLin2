@@ -11,6 +11,20 @@ float height = 600;
 
 SetupWindow::SetupWindow(NodeManager& node_manager, MaterialManager& material_manager, ElementManager& element_manager) : mNodeManager(node_manager), mMaterialManager(material_manager), mElementManager(element_manager) {}
 
+int SetupWindow::FindNodeIndex(const NodeData& node)
+{
+    for (size_t i = 0; i < mNodeManager.nodes.size(); i++)
+    {
+        if (mNodeManager.nodes[i].x == node.x &&
+            mNodeManager.nodes[i].y == node.y)
+        {
+            return static_cast<int>(i);
+        }
+    }
+
+    return -1;
+}
+
 
 void SetupWindow::MaterialTable() {
     ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
@@ -349,17 +363,83 @@ void SetupWindow::ElementTable() {
         if (ImGui::BeginPopup("AddElementPopup")) {
             static MaterialData material_data;
             static int selectedMaterial = -1;
+            static NodeData node1_data;
+            static NodeData node2_data;
+            static int selectedNode1 = -1;
+            static int selectedNode2 = -1;
 
             if (ImGui::BeginTable("AlignedInputs", 2, ImGuiTableFlags_SizingFixedFit)) {
                 ImGui::TableSetupColumn("Labels", ImGuiTableColumnFlags_WidthFixed, 150.0f);
                 ImGui::TableSetupColumn("Inputs", ImGuiTableColumnFlags_WidthFixed, 130.0f);
 
+                //Node 1 row
+                // Node 1
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Start Node:");
+
+                 const char* node1Label =
+                    (selectedNode1 >= 0)
+                    ? ("Node " + std::to_string(selectedNode1 + 1)).c_str()
+                    : "Select Node 1";
+
+                if (ImGui::Button(node1Label, ImVec2(-FLT_MIN, 0.0f)))
+
+                    ImGui::OpenPopup("Node1Popup");
+
+                if (ImGui::BeginPopup("Node1Popup"))
+                {
+                    for (size_t i = 0; i < mNodeManager.nodes.size(); i++)
+                    {
+                        char label[32];
+                        sprintf_s(label, "Node %zu", i + 1);
+
+                        if (ImGui::Selectable(label))
+                        {
+                            selectedNode1 = (int)i;
+                            node1_data = mNodeManager.nodes[i];
+                            ImGui::CloseCurrentPopup();
+                        }
+                    }
+                    ImGui::EndPopup();
+                }
+
+                //Node 2 row
+                // Node 1
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("End Node:");
+
+
+                const char* node2Label =
+                    (selectedNode2 >= 0)
+                    ? ("Node " + std::to_string(selectedNode2 + 1)).c_str()
+                    : "Select Node 2";
+
+                if (ImGui::Button(node2Label, ImVec2(-FLT_MIN, 0.0f)))
+                    ImGui::OpenPopup("Node2Popup");
+
+                if (ImGui::BeginPopup("Node2Popup"))
+                {
+                    for (size_t i = 0; i < mNodeManager.nodes.size(); i++)
+                    {
+                        char label[32];
+                        sprintf_s(label, "Node %zu", i + 1);
+
+                        if (ImGui::Selectable(label))
+                        {
+                            selectedNode2 = (int)i;
+                            node2_data = mNodeManager.nodes[i];
+                            ImGui::CloseCurrentPopup();
+                        }
+                    }
+                    ImGui::EndPopup();
+                }
+
                 // Material row
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("Assign Material:");
-
-                ImGui::TableSetColumnIndex(1);
 
                 const char* buttonText = (selectedMaterial >= 0) ? mMaterialManager.materials[selectedMaterial].name.c_str() : "Select Material";
 
@@ -391,22 +471,22 @@ void SetupWindow::ElementTable() {
                 ImGui::EndTable();
             }
 
-            bool isCurrentlyDuplicate = false;
+
             bool noMaterialSelected = (selectedMaterial < 0);
+            bool noNode1Selected = (selectedNode1 < 0);
+            bool noNode2Selected = (selectedNode2 < 0);
+            bool sameNode = (selectedNode1 == selectedNode2);
             
-            if (isCurrentlyDuplicate || noMaterialSelected) {
+            if (noMaterialSelected || noNode1Selected || noNode2Selected || sameNode) {
                 ImGui::BeginDisabled();
             }
             if (ImGui::Button("Add Element")) {
                 ElementData newElement;
+                newElement.node1 = node1_data;
+                newElement.node2 = node2_data;
                 newElement.material = material_data;
                 mElementManager.elements.push_back(newElement);
                 ImGui::CloseCurrentPopup();
-            }
-            if (isCurrentlyDuplicate) {
-                ImGui::EndDisabled();
-                ImGui::Spacing();
-                ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "Error: Element already exists with this name!");
             }
 
             if (noMaterialSelected) {
@@ -436,6 +516,8 @@ void SetupWindow::ElementTable() {
         for (size_t i = 0; i < mElementManager.elements.size(); i++) {
             ImGui::TableNextRow();
 
+            auto& element = mElementManager.elements[i];
+
             // Column 1: Node Name
             ImGui::TableNextColumn();
             // Inside the render loop:
@@ -445,12 +527,14 @@ void SetupWindow::ElementTable() {
 
             // Column 2: X Position
             ImGui::TableNextColumn();
-
+            ImGui::Text("N%d - N%d",
+                FindNodeIndex(element.node1) + 1,
+                FindNodeIndex(element.node2) + 1);
 
             // Material
             ImGui::TableNextColumn();
 
-            auto& element = mElementManager.elements[i];
+
 
             // isolate row ID so popup is unique per element
             ImGui::PushID((int)i);
